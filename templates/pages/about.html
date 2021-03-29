@@ -1,0 +1,71 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}
+{{setting.title}}
+{% endblock title %}
+{% block keywords %}
+{{setting.keywords}}
+{% endblock keywords %}
+{% block description %}
+{{setting.description}}
+{% endblock description %}
+{% block imageIcon %}
+<link rel="shortcut icon" type="image/jepg" href="{% static 'img/golden_pound_icon.jpg' %}" sizes="20x20" />
+{% endblock imageIcon %}
+
+{% block content %}
+{% include 'includes/nav.html' %}
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+    <div class="container" style="padding:6px; margin: 0px 6px;">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'home' %}"> {% trans "Home" %}</a></li>
+            <li class="active"> {% trans "About Us" %}</li>
+        </ul>
+    </div>
+</div>
+<!-- /BREADCRUMB -->
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <script>
+            $(function () {
+                $("#slider-3").slider({
+                    range: true,
+                    min: 0,
+                    max: 500,
+                    values: [50, 300],
+                    slide: function (event, ui) {
+                        $("#price").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                    },
+                    stop: function (event, ui) {
+                        console.log('llodlf')
+                    }
+                });
+                $("#price").val("$" + $("#slider-3").slider("values", 0) +
+                    " - $" + $("#slider-3").slider("values", 1));
+            });
+        </script>
+        </head>
+
+        <!-- HTML -->
+        <p>
+            <label for="price">Price range:</label>
+            <input type="text" id="price" style="border:0; color:red; font-weight:bold;">
+        </p>
+        <div id="slider-3"></div>
+
+        <!-- row -->
+        <div class="row">
+            {{ setting.aboutus|safe }}
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+
+{% endblock content %}
