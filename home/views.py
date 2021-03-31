@@ -13,6 +13,9 @@ from . import context_processors
 from django.core.paginator import Paginator
 from django.db.models import Max, Min
 from cart.cart import Cart
+from home.forms import SearchForm
+import json
+
 
 # Create your views here.
 def home(request):
@@ -276,3 +279,42 @@ def deleteshoplist(request):
     response = JsonResponse({"tot": tot, "qty": basketqty})
 
     return response
+
+
+def search(request):
+    if request.method == "POST":  # check post
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data["query"]  # get form input data
+            catid = form.cleaned_data["catid"]
+            if catid == 0:
+                products = Product.objects.filter(
+                    title__icontains=query, title_ar__icontains=query 
+                )  # SELECT * FROM product WHERE title LIKE '%query%'
+            else:
+                products = Product.objects.filter(
+                    title__icontains=query, title_ar__icontains=query
+                )
+
+            category = Category.objects.all()
+            context = {"products": products, "query": query, "category": category}
+            return render(request, "pages/search_products.html", context)
+
+    return HttpResponseRedirect("/")
+
+
+def search_auto(request):
+    if request.is_ajax():
+        q = request.GET.get("term", "")
+        products = Product.objects.filter(title__icontains=q)
+
+        results = []
+        for rs in products:
+            product_json = {}
+            product_json = rs.title + " > " + rs.category.title
+            results.append(product_json)
+        data = json.dumps(results)
+    else:
+        data = "fail"
+    mimetype = "application/json"
+    return HttpResponse(data, mimetype)

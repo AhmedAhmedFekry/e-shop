@@ -48,6 +48,8 @@ urlpatterns += i18n_patterns(
     path("login/", UserViews.login_form, name="login"),
     path("logout/", UserViews.logout_func, name="logout"),
     path("signup/", UserViews.signup_form, name="signup"),
+    path("search/", views.search, name="search"),
+    path("search_auto/", views.search_auto, name="search_auto"),
     path("paypal/", include("paypal.standard.ipn.urls")),
     path("payment/", include("payment.urls")),
     prefix_default_language=True,
