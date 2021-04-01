@@ -44,10 +44,12 @@ def order_detail(obj):
     return mark_safe(f'<a href="{url}">View</a>')
 
 
-# def order_pdf(obj):
-#     url = reverse('orders:admin_order_pdf', args=[obj.id])
-#     return mark_safe(f'<a href="{url}">PDF</a>')
-# order_pdf.short_description = 'Invoice'
+def order_pdf(obj):
+    url = reverse("admin_order_pdf", args=[obj.id])
+    return mark_safe(f'<a href="{url}">PDF</a>')
+
+
+order_pdf.short_description = "Invoice"
 
 
 class OrderProductline(admin.TabularInline):
@@ -68,8 +70,8 @@ class OrderAdmin(admin.ModelAdmin):
         "status",
         "create_at",
         "paid",
-        "action_btn",
         order_detail,
+        order_pdf,
     ]
     # list_filter = ['status']
     list_per_page = 20
@@ -98,17 +100,6 @@ class OrderAdmin(admin.ModelAdmin):
     # can_delete = False
     actions = [export_to_csv]
 
-    def action_btn(self, obj):
-
-        html = (
-            "<a class='btn btn-warning'style='padding:6px; margin: 0px 6px;' href='/admin/order/"
-            + str(obj.id)
-            + "/pdf_view/'>pdf<i class='fa fa-file-pdf-o'></i></a>"
-        )
-
-        return format_html(html)
-
-    action_btn.short_description = "Action"
     inlines = [OrderProductline]
 
 

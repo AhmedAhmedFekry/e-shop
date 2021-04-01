@@ -8,6 +8,8 @@ urlpatterns = [
         views.admin_order_detail,
         name="admin_order_detail",
     ),
-    # path("pdf_view/<int:order_id>/", views.ViewPDF.as_view(), name="pdf_view"),
-    # path("pdf_download/", views.DownloadPDF.as_view(), name="pdf_download"),
+    path(
+        "admin/order/<int:order_id>/pdf/", views.admin_order_pdf, name="admin_order_pdf"
+    ),
+    
 ]
