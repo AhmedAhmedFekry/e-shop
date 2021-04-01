@@ -15,6 +15,7 @@ from django.db.models import Max, Min
 from cart.cart import Cart
 from home.forms import SearchForm
 import json
+from django.db.models import Q
 
 
 # Create your views here.
@@ -289,11 +290,15 @@ def search(request):
             catid = form.cleaned_data["catid"]
             if catid == 0:
                 products = Product.objects.filter(
-                    title__icontains=query, title_ar__icontains=query 
+                    Q(title__icontains=query)
+                    | Q(title_ar__icontains=query)
+                    | Q(title_en__icontains=query)
                 )  # SELECT * FROM product WHERE title LIKE '%query%'
             else:
                 products = Product.objects.filter(
-                    title__icontains=query, title_ar__icontains=query
+                    Q(title__icontains=query)
+                    | Q(title_ar__icontains=query)
+                    | Q(title_en__icontains=query)
                 )
 
             category = Category.objects.all()
@@ -306,7 +311,9 @@ def search(request):
 def search_auto(request):
     if request.is_ajax():
         q = request.GET.get("term", "")
-        products = Product.objects.filter(title__icontains=q)
+        products = Product.objects.filter(
+            Q(title__icontains=q) | Q(title_ar__icontains=q) | Q(title_en__icontains=q)
+        )
 
         results = []
         for rs in products:
